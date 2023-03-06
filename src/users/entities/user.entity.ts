@@ -20,8 +20,12 @@ export class User {
   // @Field(() => String)
   password: string;
 
-  @Column({ type: 'text', array: true, default: ['user'] })
-  @Field(() => String)
+  @Column({
+    type: 'text',
+    array: true,
+    default: ['user'],
+  })
+  @Field(() => [String])
   roles: string[];
 
   @Column({
