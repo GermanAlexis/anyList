@@ -48,6 +48,14 @@ export class UsersService {
     }
   }
 
+  async findOneById(id: string): Promise<User> {
+    try {
+      return await this.userReposistory.findOneByOrFail({ id });
+    } catch (error) {
+      throw new NotFoundException(`${id} not found `);
+    }
+  }
+
   // async block(id: string): Promise<User> {
   //   return;
   // }

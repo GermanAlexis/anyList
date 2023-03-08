@@ -1,8 +1,10 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
-import { UsersService } from 'src/users/users.service';
+import { UseGuards } from '@nestjs/common';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { SignInInput, SignUpInput } from './dto/inputs/index';
+import { UsersService } from 'src/users/users.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthResponse } from './types/auth-response.types';
+import { SignInInput, SignUpInput } from './dto/inputs/index';
 
 @Resolver()
 export class AuthResolver {
@@ -24,8 +26,10 @@ export class AuthResolver {
   ): Promise<AuthResponse> {
     return await this.authService.signIn(signinInput);
   }
-  // @Mutation(() => Auth)
-  // removeAuth(@Args('id', { type: () => Int }) id: number) {
-  //   return this.authService.remove(id);
-  // }
+  @Query(() => AuthResponse, { name: 'revalidate' })
+  @UseGuards(JwtAuthGuard)
+  removeAuth(): AuthResponse {
+    throw new Error('Hola');
+    // return this.authService.remove(id);
+  }
 }
