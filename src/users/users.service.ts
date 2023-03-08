@@ -6,10 +6,11 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-import { SignUpInput } from 'src/auth/dto/inputs/singup-input';
+import { SignUpInput } from 'src/auth/dto/inputs/signup-input';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -35,9 +36,17 @@ export class UsersService {
     return [];
   }
 
-  // async findOne(id: string): Promise<User> {
-  //   return;
-  // }
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      return await this.userReposistory.findOneByOrFail({ email });
+    } catch (error) {
+      throw new NotFoundException(`${email} not found `);
+      // this.handleDBErrors({
+      //   code: 'error-01',
+      //   details: `${email} not found`,
+      // });
+    }
+  }
 
   // async block(id: string): Promise<User> {
   //   return;
