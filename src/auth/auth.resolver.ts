@@ -5,6 +5,9 @@ import { UsersService } from 'src/users/users.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthResponse } from './types/auth-response.types';
 import { SignInInput, SignUpInput } from './dto/inputs/index';
+import { currentUser } from './decorator/current-user.decorator';
+import { User } from 'src/users/entities/user.entity';
+import { ValidRoles } from './enums/valid-roles.enum';
 
 @Resolver()
 export class AuthResolver {
@@ -28,8 +31,7 @@ export class AuthResolver {
   }
   @Query(() => AuthResponse, { name: 'revalidate' })
   @UseGuards(JwtAuthGuard)
-  removeAuth(): AuthResponse {
-    throw new Error('Hola');
-    // return this.authService.remove(id);
+  revalidateToken(@currentUser([ValidRoles.superA]) user: User): AuthResponse {
+    return this.authService.revalidateToken(user);
   }
 }
