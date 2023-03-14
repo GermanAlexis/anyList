@@ -16,16 +16,16 @@ export class UsersResolver {
   @Query(() => [User], { name: 'users' })
   findAll(
     @Args() validRoles: validRolesArgs,
-    @currentUser([ValidRoles.superA]) user: User,
+    @currentUser([ValidRoles.user]) user: User,
   ): Promise<User[]> {
     //* Is posible use props of user
     return this.usersService.findAll(validRoles.roles);
   }
 
-  @Query(() => User, { name: 'user' })
+  @Query(() => User, { name: 'UserById' })
   findOne(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
-    @currentUser([ValidRoles.user]) user: User,
+    // @currentUser([ValidRoles.user, ValidRoles.admin]) user: User,
   ) {
     //* Is posible use props of user
     return this.usersService.findOneById(id);
