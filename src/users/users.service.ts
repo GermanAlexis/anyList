@@ -34,7 +34,13 @@ export class UsersService {
   }
 
   async findAll(roles: ValidRoles[]): Promise<User[]> {
-    if (!roles.length) return this.userReposistory.find();
+    if (!roles.length)
+      return this.userReposistory.find({
+        //* relationship not need why is props lazy in the entity
+        // relations: {
+        //   lastUpdateBy: true,
+        // },
+      });
 
     return this.userReposistory
       .createQueryBuilder()
@@ -63,9 +69,12 @@ export class UsersService {
     }
   }
 
-  // async block(id: string): Promise<User> {
-  //   return;
-  // }
+  async block(id: string, user: User): Promise<User> {
+    const userToBlock = await this.findOneById(id);
+    userToBlock.isActive = false;
+    userToBlock.lastUpdateBy = user;
+    return this.userReposistory.save(userToBlock);
+  }
 
   private handleDBErrors(error: any): never {
     if (error.code === '23505')
