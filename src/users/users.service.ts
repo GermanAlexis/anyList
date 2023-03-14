@@ -4,14 +4,18 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import * as bcrypt from 'bcrypt';
 
-import { SignUpInput } from 'src/auth/dto/inputs/signup-input';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { NotFoundException } from '@nestjs/common';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+import { SignUpInput } from 'src/auth/dto/inputs/signup-input';
+import { UpdateUserInput } from './dto/input/index';
+
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -66,6 +70,19 @@ export class UsersService {
       return await this.userReposistory.findOneByOrFail({ id });
     } catch (error) {
       throw new NotFoundException(`${id} not found `);
+    }
+  }
+
+  async update(
+    updateUserInput: UpdateUserInput,
+    userUpdated: User,
+  ): Promise<User> {
+    try {
+      const user = await this.userReposistory.preload(updateUserInput);
+      user.lastUpdateBy = userUpdated;
+      return await this.userReposistory.save(user);
+    } catch (error) {
+      this.handleDBErrors(error);
     }
   }
 

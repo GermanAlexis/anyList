@@ -42,7 +42,8 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
-  blockUser(id: ID!): User!
+  BlockUser(id: ID!): User!
+  UpdateUser(updateUserInput: UpdateUserInput!): User!
   signup(signupInput: SignUpInput!): AuthResponse!
   login(signinInput: SignInInput!): AuthResponse!
 }
@@ -58,6 +59,15 @@ input UpdateItemInput {
   quantity: Float
   units: String
   id: ID!
+}
+
+input UpdateUserInput {
+  email: String
+  fullName: String
+  password: String
+  id: ID!
+  roles: [validRoles!]
+  isActive: Boolean
 }
 
 input SignUpInput {
