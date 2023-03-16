@@ -19,6 +19,7 @@ export const currentUser = createParamDecorator(
         `no user inside the reques - make sure that we user the AuthGuards`,
       );
 
+    if (!roles.length) return user;
     for (const role of roles) {
       if (user.roles.includes(role)) {
         return user;
