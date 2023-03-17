@@ -29,7 +29,13 @@ type Query {
   revalidate: AuthResponse!
   users(roles: [validRoles!] = []): [User!]!
   UserById(id: ID!): User!
-  items: [Item!]!
+  items(
+    """Skip number of items next"""
+    offset: Int = 0
+
+    """quantity de items to back"""
+    limit: Int = 6
+  ): [Item!]!
   item(id: ID!): Item!
 }
 

@@ -63,22 +63,14 @@ export class SeedService {
 
   async loadItems(users: any) {
     const items = SEED_ITEMS;
-    const itemsPerUser = SEED_ITEMS.length / users.length;
-    let currentItemIndex = 0;
-
+    const itemsPerUser = Math.floor(SEED_ITEMS.length / users.length);
     for (let i = 0; i < users.length; i++) {
       const itemsPromise = [];
-      const itemsForCurrentUser = items.splice(currentItemIndex, itemsPerUser);
+      const limit = i == users.length - 1 ? items.length : itemsPerUser;
+      const itemsForCurrentUser = items.splice(0, limit);
       for (const item of itemsForCurrentUser) {
         itemsPromise.push(this.itemsService.create(item, users[i]));
-        if (items.length > 0) {
-          itemsPromise.push(
-            this.itemsService.create(item, users[users.length - 1]),
-          );
-        }
       }
-
-      currentItemIndex += itemsPerUser;
       await Promise.all(itemsPromise);
     }
   }
