@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationArg } from 'src/common/dto/args/pagination.arg';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateItemInput, UpdateItemInput } from './dto/input';
@@ -17,8 +18,11 @@ export class ItemService {
     return this.itemsRepository.save(newItem);
   }
 
-  async findAll(user: User): Promise<Item[]> {
+  async findAll(user: User, pagination: PaginationArg): Promise<Item[]> {
+    const { limit, offset } = pagination;
     return this.itemsRepository.find({
+      take: limit,
+      skip: offset,
       where: {
         user: {
           id: user.id,
