@@ -15,5 +15,10 @@ export class CreateItemInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
-  units?: string;
+  quantityUnits?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  category?: string;
 }

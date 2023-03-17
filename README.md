@@ -38,5 +38,7 @@ nest start:dev
 6. ir a la url del server
 
 ```
-localhost:3000/graphql
+localhost:3000
 ```
+
+7. Ejecutar la mutation executeSeed, para llenar la base de datos de pruebas
