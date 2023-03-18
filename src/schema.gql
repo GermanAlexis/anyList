@@ -9,8 +9,17 @@ type User {
   roles: [String!]!
   isActive: Boolean!
   lastUpdateBy: User
-  items: [Item!]!
   itemsCount: Int!
+  itemsSearch(
+    """Skip number of items next"""
+    offset: Int = 0
+
+    """quantity de items to back"""
+    limit: Int = 6
+
+    """parameter for really search"""
+    search: String
+  ): [Item!]!
 }
 
 type Item {
@@ -27,16 +36,34 @@ type AuthResponse {
 
 type Query {
   revalidate: AuthResponse!
-  users(roles: [validRoles!] = []): [User!]!
+  users(
+    roles: [validRoles!] = []
+
+    """Skip number of items next"""
+    offset: Int = 0
+
+    """quantity de items to back"""
+    limit: Int = 6
+
+    """parameter for really search"""
+    search: String
+  ): [User!]!
   UserById(id: ID!): User!
+
+  """Find all items, pagination and search"""
   items(
     """Skip number of items next"""
     offset: Int = 0
 
     """quantity de items to back"""
     limit: Int = 6
+
+    """parameter for really search"""
+    search: String
   ): [Item!]!
-  item(id: ID!): Item!
+
+  """find items per by id"""
+  itemById(id: ID!): Item!
 }
 
 """Roles valid in system"""

@@ -7,7 +7,7 @@ import {
 import { NotFoundException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
 
@@ -16,6 +16,7 @@ import { SignUpInput } from 'src/auth/dto/inputs/signup-input';
 import { UpdateUserInput } from './dto/input/index';
 
 import { User } from './entities/user.entity';
+import { SearchArgs } from '../common/dto/args/search.arg';
 
 @Injectable()
 export class UsersService {
@@ -37,20 +38,38 @@ export class UsersService {
     }
   }
 
-  async findAll(roles: ValidRoles[]): Promise<User[]> {
-    if (!roles.length)
+  async findAll(props: any): Promise<User[]> {
+    const { pagination, roles, searchArgs } = props;
+    const { search } = searchArgs;
+
+    if (!roles.length) {
       return this.userReposistory.find({
-        //* relationship not need why is props lazy in the entity
+        // * relationship not need why is props lazy in the entity
         // relations: {
         //   lastUpdateBy: true,
         // },
-      });
+        take: pagination?.limit,
+        skip: pagination?.offset,
 
-    return this.userReposistory
+        where: {
+          fullName: Like(`%${search?.toLocaleLowerCase()}%`),
+        },
+      });
+    }
+
+    const queryBuilder = this.userReposistory
       .createQueryBuilder()
+      .skip(pagination?.offset)
+      .take(pagination?.limit)
       .andWhere('ARRAY[roles] && ARRAY[:...roles]')
-      .setParameter('roles', roles)
-      .getMany();
+      .setParameter('roles', roles);
+
+    if (search) {
+      queryBuilder.andWhere('LOWER(fullName) like :fullName', {
+        fullName: `%${search.toLocaleLowerCase()}%`,
+      });
+    }
+    return queryBuilder.getMany();
   }
 
   async findOneByEmail(email: string): Promise<User> {

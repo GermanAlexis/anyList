@@ -5,6 +5,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateItemInput, UpdateItemInput } from './dto/input';
 import { Item } from './entities/item.entity';
+import { SearchArgs } from 'src/common/dto/args';
 
 @Injectable()
 export class ItemService {
@@ -18,17 +19,37 @@ export class ItemService {
     return this.itemsRepository.save(newItem);
   }
 
-  async findAll(user: User, pagination: PaginationArg): Promise<Item[]> {
+  async findAll(
+    user: User,
+    pagination: PaginationArg,
+    searchArgs: SearchArgs,
+  ): Promise<Item[]> {
     const { limit, offset } = pagination;
-    return this.itemsRepository.find({
-      take: limit,
-      skip: offset,
-      where: {
-        user: {
-          id: user.id,
-        },
-      },
-    });
+    const { search } = searchArgs;
+    const queryBuilder = this.itemsRepository
+      .createQueryBuilder()
+      .skip(offset)
+      .take(limit)
+      .where(`"userId" = :userId`, { userId: user.id });
+
+    if (search) {
+      queryBuilder.andWhere('LOWER(name) like :name', {
+        name: `%${search.toLocaleLowerCase()}%`,
+      });
+    }
+    return queryBuilder.getMany();
+
+    //? Sugerency
+    // return this.itemsRepository.find({
+    //   take: limit,
+    //   skip: offset,
+    //   where: {
+    //     user: {
+    //       id: user.id,
+    //     },
+    //     name: Like(`%${search?.toLocaleLowerCase()}%`),
+    //   },
+    // });
   }
 
   async findOne(id: string, user: User): Promise<Item> {
