@@ -7,16 +7,14 @@ import {
 import { NotFoundException } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
 
-import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { SignUpInput } from 'src/auth/dto/inputs/signup-input';
 import { UpdateUserInput } from './dto/input/index';
 
 import { User } from './entities/user.entity';
-import { SearchArgs } from '../common/dto/args/search.arg';
 
 @Injectable()
 export class UsersService {
@@ -51,9 +49,9 @@ export class UsersService {
         take: pagination?.limit,
         skip: pagination?.offset,
 
-        where: {
-          fullName: Like(`%${search?.toLocaleLowerCase()}%`),
-        },
+        // where: {
+        //   fullName: Like(`%${search?.toLocaleLowerCase()}%`),
+        // },
       });
     }
 
