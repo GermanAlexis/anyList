@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationArg } from 'src/common/dto/args/pagination.arg';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateItemInput, UpdateItemInput } from './dto/input';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { User } from './../users/entities/user.entity';
 import { Item } from './entities/item.entity';
-import { SearchArgs } from 'src/common/dto/args';
+
+import { CreateItemInput, UpdateItemInput } from './dto/input';
+
+import { PaginationArg, SearchArgs } from './../common/dto/args';
 
 @Injectable()
 export class ItemService {
@@ -76,7 +78,7 @@ export class ItemService {
     return this.itemsRepository.save(item);
   }
 
-  async remove(id: string, user): Promise<Item> {
+  async remove(id: string, user: User): Promise<Item> {
     const item = await this.findOne(id, user);
 
     await this.itemsRepository.remove(item);

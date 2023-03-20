@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type List {
+  id: ID!
+  name: String!
+  user: User!
+}
+
 type User {
   id: ID!
   fullName: String!
@@ -20,6 +26,17 @@ type User {
     """parameter for really search"""
     search: String
   ): [Item!]!
+  listCount: Int!
+  listsSearch(
+    """Skip number of items next"""
+    offset: Int = 0
+
+    """quantity de items to back"""
+    limit: Int = 6
+
+    """parameter for really search"""
+    search: String
+  ): [List!]!
 }
 
 type Item {
@@ -64,6 +81,17 @@ type Query {
 
   """find items per by id"""
   itemById(id: ID!): Item!
+  lists(
+    """Skip number of items next"""
+    offset: Int = 0
+
+    """quantity de items to back"""
+    limit: Int = 6
+
+    """parameter for really search"""
+    search: String
+  ): [List!]!
+  listById(id: ID!): List!
 }
 
 """Roles valid in system"""
@@ -81,6 +109,9 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
+  ListCreate(createListInput: CreateListInput!): List!
+  updateList(updateListInput: UpdateListInput!): List!
+  removeList(id: ID!): List!
 
   """Ejecuta la construccion de base de datos"""
   executeSeed: Boolean!
@@ -116,5 +147,16 @@ input UpdateItemInput {
   name: String
   quantityUnits: String
   category: String
+  id: ID!
+}
+
+input CreateListInput {
+  """Example field (placeholder)"""
+  name: String!
+}
+
+input UpdateListInput {
+  """Example field (placeholder)"""
+  name: String
   id: ID!
 }

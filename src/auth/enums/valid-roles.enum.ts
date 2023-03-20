@@ -5,7 +5,7 @@ import { registerEnumType } from '@nestjs/graphql';
 export enum ValidRoles {
   admin = 'admin',
   user = 'user',
-  superA = 'superAdmin',
+  superA = 'superUser',
 }
 
 registerEnumType(ValidRoles, {
