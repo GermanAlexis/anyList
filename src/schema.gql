@@ -2,10 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ListItem {
+  id: ID!
+  quantity: Float!
+  completed: Boolean!
+  item: Item!
+}
+
 type List {
   id: ID!
   name: String!
   user: User!
+  listItem: [ListItem!]!
+  items(
+    """Skip number of items next"""
+    offset: Int = 0
+
+    """quantity de items to back"""
+    limit: Int = 6
+
+    """parameter for really search"""
+    search: String
+  ): [ListItem!]!
+  TotalItemsCount: Int!
 }
 
 type User {
@@ -44,6 +63,7 @@ type Item {
   name: String!
   units: String
   user: User!
+  listItem: [ListItem!]!
 }
 
 type AuthResponse {
@@ -92,6 +112,7 @@ type Query {
     search: String
   ): [List!]!
   listById(id: ID!): List!
+  listItem: [ListItem!]!
 }
 
 """Roles valid in system"""
@@ -112,6 +133,7 @@ type Mutation {
   ListCreate(createListInput: CreateListInput!): List!
   updateList(updateListInput: UpdateListInput!): List!
   removeList(id: ID!): List!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
 
   """Ejecuta la construccion de base de datos"""
   executeSeed: Boolean!
@@ -159,4 +181,11 @@ input UpdateListInput {
   """Example field (placeholder)"""
   name: String
   id: ID!
+}
+
+input CreateListItemInput {
+  quantity: Float = 0
+  completed: Boolean = false
+  listId: ID!
+  itemId: ID!
 }
